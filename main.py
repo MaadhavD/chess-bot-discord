@@ -106,6 +106,40 @@ async def move(bot, ctx, source, dest):
         asyncio.create_task(make_move())
     else:
         await ctx.send("Invalid move")
+@commands(name='undo', help='Undo the last move made on the chess board')
+async def undo(ctx):
+    # Check if there are any moves to undo
+    if len(board.move_stack) == 0:
+        await ctx.send("There are no moves to undo.")
+        return
+
+    # Undo the last move
+    board.pop()
+
+    # Update the chess board
+    widget.update_board()
+
+@commands(name='engine', help='Get a recommendation from the chess engine')
+async def engine(bot, ctx):
+    # Get a recommendation from the chess engine
+    engine.position(board)
+    info = engine.go(movetime=2000)
+    recommendation = info["bestmove"]
+    await ctx.send(f"Engine recommendation: {recommendation}")
+@commands(name='help', help='Show a list of available commands')
+async def help(ctx):
+    # Create the embed message
+    embed = discord.Embed(title='Help', description='List of available commands')
+
+    # Add a field for each command
+    embed.add_field(name='!newgame', value='Start a new game of chess', inline=False)
+    embed.add_field(name='!move', value='Make a move on the chess board', inline=False)
+    embed.add_field(name='!undo', value='Undo the last move made on the chess board', inline=False)
+    embed.add_field(name='!engine', value='Get a recommendation from the chess engine', inline=False)
+
+    # Send the embed message
+    await ctx.send(embed=embed)
+
 
 # Run the Discord bot
 bot.run(TOKEN)
