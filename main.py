@@ -4,15 +4,23 @@ import chess
 import chess.pgn
 import chess.svg
 import chess.engine
-import chess.uci
 import tkinter as tk
 
 # Replace YOUR_BOT_TOKEN with the token for your Discord bot
-TOKEN = 'YOUR_BOT_TOKEN'
+TOKEN = 'MTAyNzcyODI3OTY1NTk0NDIzMw.GZzpi7.3Fe6Z0ZTHoRcYiKutF7DYFAYrW9fgrp5s-o4dg'
 
 # Initialize the Discord client and the bot
 client = discord.Client()
 bot = commands.Bot(command_prefix='!')
+
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.errors.CheckFailure):
+        await ctx.send("Sorry, you don't have permission to use this command.")
+    elif isinstance(error, commands.errors.CommandNotFound):
+        await ctx.send("Sorry, that is not a valid command.")
+    else:
+        await ctx.send("An error has occurred while processing your command.")
+
 
 # Create a chess board and engine
 board = chess.Board()
@@ -98,11 +106,13 @@ async def showboard(ctx):
 @bot.command()
 async def play(ctx):
     # Make a move using the chess engine
-    result = engine.play(board, chess.engine.Limit(time=0.1))
-    board.push(result.move)
-    widget.update_board()
-    await ctx.send(f"I made the move {result.move}")
-
+    try:
+        result = engine.play(board, chess.engine.Limit(time=0.1))
+        board.push(result.move)
+        widget.update_board()
+        await ctx.send(f"I made the move {result.move}")
+    except chess.engine.EngineError as e:
+        await ctx.send(f"An error occurred while interacting with the chess engine: {e}")
 # Run the Discord bot
 client.run(TOKEN)
 
