@@ -8,8 +8,7 @@ import chess.uci
 import tkinter as tk
 import asyncio
 
-# Replace YOUR_BOT_TOKEN with the token for your Discord bot
-TOKEN = 'MTAyNzcyODI3OTY1NTk0NDIzMw.GZzpi7.3Fe6Z0ZTHoRcYiKutF7DYFAYrW9fgrp5s-o4dg'
+TOKEN = ''
 
 # Initialize the Discord client and the bot
 client = discord.Client()
